@@ -13,9 +13,11 @@ class App extends React.Component {
 		this.playNextTrack = this.playNextTrack.bind(this);
 		this.playTrack = this.playTrack.bind(this);
 		this.pauseTrack = this.pauseTrack.bind(this);
+		this.playThisTrack = this.playThisTrack.bind(this);
+
 		this.audio = audiojs.createAll({
 			trackEnded: function() {
-				playNextTrack();
+				self.playNextTrack();
 			}
 		})[0];
 		superagent
@@ -35,22 +37,25 @@ class App extends React.Component {
 					<audio />
 				</div>
 				<div>
-					<a onClick={this.pauseTrack} className="btn btn-default">Pause</a>
-					<a onClick={this.playTrack} className="btn btn-default">Play</a>
 					<a onClick={this.playNextTrack} className="btn btn-default">Next</a>
 				</div>
-				<ul className="list-group">
+				<ul className="list-group track-list">
 				{
 					this.state.tracks.map((track, index) => {
 						let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
 						return (
-							<li key={index} className={currentClass}>{index+1}. {track.artist} - {track.title}</li>
+							<li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>{index+1}. {track.artist} - {track.title}</li>
 						)
 					})
 				}
 				</ul>
 			</div>
 		);
+	}
+	playThisTrack(index) {
+		this.setState({currentTrack: index}, () => {
+			this._playCurrentTrack();
+		});
 	}
 	_playCurrentTrack() {
 		localStorage.setItem("currentTrack", this.state.currentTrack);
