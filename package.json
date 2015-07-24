@@ -1,0 +1,10 @@
+{
+  "name": "vk-audio",
+  "version": "0.0.1",
+  "dependencies": {
+    "superagent": "~1.2.0",
+    "express": "~4.13.1",
+    "babel": "~5.8.3"
+  },
+  "license": "MIT"
+}

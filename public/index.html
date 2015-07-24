@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="/favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<title>VK Audio</title>
+	</head>
+	<body>
+		<div class="container">
+			<div>				
+				<audio />
+			</div>
+			<a href="javascript:pauseTrack()" class="btn btn-default">Pause</a>
+			<a href="javascript:playTrack()" class="btn btn-default">Play</a>
+			<a href="javascript:playNextTrack()" class="btn btn-default">Next</a>
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/1.2.0/superagent.min.js"></script>
+		<script src="audio.min.js"></script>
+		<script>
+			var audio,
+				urls = [],
+				currentTrack = 0;
+
+			var playCurrentTrack = function() {
+				localStorage.setItem("currentTrack", currentTrack);
+				audio[0].load(urls[currentTrack]);
+				audio[0].play();
+			};
+
+			var playNextTrack = function() {
+				currentTrack++;
+				playCurrentTrack();
+			};
+
+			var playTrack = function() {
+				audio[0].play();
+			};
+
+			var pauseTrack = function() {
+				audio[0].pause();
+			};
+
+			audiojs.events.ready(function() {
+				audio = audiojs.createAll({
+					trackEnded: function() {
+						currentTrack++;
+						playCurrentTrack();
+					}
+				});
+				
+				superagent
+					.get('/api/track')
+					.withCredentials()
+					.end(function(err, res) {
+						urls = res.body.map(function(item) {return item.url});
+						currentTrack = localStorage.getItem("currentTrack") && parseInt(localStorage.getItem("currentTrack"), 10) || 0;
+						playCurrentTrack();
+					});
+			});
+		</script>
+	</body>
+</html>
