@@ -6,8 +6,8 @@ let app = express();
 let apiRouter = express.Router();
 
 const userId = '-20833574';
-const accessToken = process.env.access_token;
-const url = 'https://api.vk.com/method/audio.get?access_token=' + access_token + '&count=100&owner_id=' + userId;
+const accessToken = process.env.ACCESS_TOKEN;
+const url = 'https://api.vk.com/method/audio.get?access_token=' + accessToken + '&count=100&owner_id=' + userId;
 
 apiRouter.get('/track', (req, res) => {
 	request

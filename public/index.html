@@ -11,57 +11,11 @@
 		<title>VK Audio</title>
 	</head>
 	<body>
-		<div class="container">
-			<div>				
-				<audio />
-			</div>
-			<a href="javascript:pauseTrack()" class="btn btn-default">Pause</a>
-			<a href="javascript:playTrack()" class="btn btn-default">Play</a>
-			<a href="javascript:playNextTrack()" class="btn btn-default">Next</a>
-		</div>
+		<div id="content" class="container"></div>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/superagent/1.2.0/superagent.min.js"></script>
-		<script src="audio.min.js"></script>
-		<script>
-			var audio,
-				urls = [],
-				currentTrack = 0;
-
-			var playCurrentTrack = function() {
-				localStorage.setItem("currentTrack", currentTrack);
-				audio[0].load(urls[currentTrack]);
-				audio[0].play();
-			};
-
-			var playNextTrack = function() {
-				currentTrack++;
-				playCurrentTrack();
-			};
-
-			var playTrack = function() {
-				audio[0].play();
-			};
-
-			var pauseTrack = function() {
-				audio[0].pause();
-			};
-
-			audiojs.events.ready(function() {
-				audio = audiojs.createAll({
-					trackEnded: function() {
-						currentTrack++;
-						playCurrentTrack();
-					}
-				});
-				
-				superagent
-					.get('/api/track')
-					.withCredentials()
-					.end(function(err, res) {
-						urls = res.body.map(function(item) {return item.url});
-						currentTrack = localStorage.getItem("currentTrack") && parseInt(localStorage.getItem("currentTrack"), 10) || 0;
-						playCurrentTrack();
-					});
-			});
-		</script>
+		<script src="http://fb.me/react-0.13.3.js"></script>
+		<script src="http://fb.me/JSXTransformer-0.13.3.js"></script>
+		<script src="/audio.min.js"></script>
+		<script type="text/jsx" src="/app.jsx"></script>
 	</body>
 </html>
