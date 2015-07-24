@@ -1,19 +1,21 @@
 "use strict";
 
 class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			tracks: [],
+			currentTrack: 0
+		}
+	}
 	componentDidMount() {
 		var self = this;
 		this.playNextTrack = this.playNextTrack.bind(this);
 		this.playTrack = this.playTrack.bind(this);
 		this.pauseTrack = this.pauseTrack.bind(this);
-		this.state = {
-			tracks: [],
-			currentTrack: 0
-		}
 		this.audio = audiojs.createAll({
 			trackEnded: function() {
-				currentTrack++;
-				playCurrentTrack();
+				playNextTrack();
 			}
 		})[0];
 		superagent
@@ -37,7 +39,16 @@ class App extends React.Component {
 					<a onClick={this.playTrack} className="btn btn-default">Play</a>
 					<a onClick={this.playNextTrack} className="btn btn-default">Next</a>
 				</div>
-
+				<ul className="list-group">
+				{
+					this.state.tracks.map((track, index) => {
+						let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
+						return (
+							<li key={index} className={currentClass}>{index+1}. {track.artist} - {track.title}</li>
+						)
+					})
+				}
+				</ul>
 			</div>
 		);
 	}
