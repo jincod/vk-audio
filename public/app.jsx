@@ -4,6 +4,7 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			id: window.location.hash.replace('#/', ''),
 			tracks: [],
 			currentTrack: 0
 		}
@@ -28,9 +29,9 @@ class App extends React.Component {
 		})[0];
 		superagent
 			.get('/api/track')
-			.query({query: window.location.hash.replace('#/', '')})
+			.query({query: this.state.id})
 			.end(function(err, res) {
-				let currentTrack = localStorage.getItem("currentTrack") && parseInt(localStorage.getItem("currentTrack"), 10) || 0;
+				let currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
 				self.setState({tracks: res.body, currentTrack: currentTrack}, function() {
 					this.audio.load(this.state.tracks[this.state.currentTrack].url);
 				});
@@ -50,12 +51,26 @@ class App extends React.Component {
 			}
 		})
 	}
+	componentDidUpdate() {
+		if(!this.onceScroll) {
+			$('li.active').prev().get(0).scrollIntoView();
+			this.onceScroll = true;
+		}
+	}
 	render() {
 		return (
 			<div style={{width: 'inherit'}}>
 				<div className="wrapper">
-					<div className>
+					<div className="pull-left" style={{width: '460px'}}>
 						<audio/>
+					</div>
+					<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px',maxWidth: '490px', overflow: 'hidden',height: '36px'}}>
+					{
+						this.state.tracks && this.state.tracks.length > 0 &&
+						<span>
+							{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
+						</span>
+					}
 					</div>
 				</div>
 				<ul className="list-group track-list">
@@ -79,7 +94,7 @@ class App extends React.Component {
 		});
 	}
 	_playCurrentTrack() {
-		localStorage.setItem("currentTrack", this.state.currentTrack);
+		localStorage.setItem("currentTrack-" + this.state.id, this.state.currentTrack);
 		this.audio.load(this.state.tracks[this.state.currentTrack].url);
 		this.audio.play();
 	}
