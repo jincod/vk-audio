@@ -52,7 +52,7 @@ class App extends React.Component {
 		})
 	}
 	componentDidUpdate() {
-		if(!this.onceScroll) {
+		if(!this.onceScroll && this.state.currentTrack > 0) {
 			$('li.active').prev().get(0).scrollIntoView();
 			this.onceScroll = true;
 		}
