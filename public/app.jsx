@@ -1,12 +1,19 @@
 "use strict";
 
-class App extends React.Component {
+var Router = ReactRouter;
+var DefaultRoute = Router.DefaultRoute;
+var Link = Router.Link;
+var Route = Router.Route;
+var RouteHandler = Router.RouteHandler;
+
+class Player extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			id: window.location.hash.replace('#/', ''),
+			id: props.params.query,
 			tracks: [],
-			currentTrack: 0
+			currentTrack: 0,
+			loading: true
 		}
 	}
 	componentDidMount() {
@@ -26,16 +33,8 @@ class App extends React.Component {
 					self.playNextTrack();
 				}
 			}
-		})[0];
-		superagent
-			.get('/api/track')
-			.query({query: this.state.id})
-			.end(function(err, res) {
-				let currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
-				self.setState({tracks: res.body, currentTrack: currentTrack}, function() {
-					this.audio.load(this.state.tracks[this.state.currentTrack].url);
-				});
-			});
+		})[0];		
+		this.loadTracks()
 		$(document).keydown((e) => {
 			let unicode = e.charCode ? e.charCode : e.keyCode;
 			// right arrow
@@ -51,11 +50,29 @@ class App extends React.Component {
 			}
 		})
 	}
+	loadTracks() {
+		var self = this;
+		superagent
+			.get('/api/track')
+			.query({query: this.props.params.query})
+			.end(function(err, res) {
+				var tracks = res.body,
+					currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
+				self.setState({tracks: tracks, currentTrack: currentTrack, loading: false});
+
+				if(tracks.length) {
+					self.audio.load(tracks[currentTrack].url);
+				}
+			});
+	}
 	componentDidUpdate() {
 		if(!this.onceScroll && this.state.currentTrack > 0) {
 			$('li.active').prev().get(0).scrollIntoView();
 			this.onceScroll = true;
 		}
+	}
+	componentWillReceiveProps(props) {
+		this.setState({id: this.props.params.query}, this.loadTracks);		
 	}
 	render() {
 		return (
@@ -118,4 +135,22 @@ class App extends React.Component {
 	};
 }
 
-React.render(<App/>, document.getElementById('content'));
+class App extends React.Component {
+	render() {
+		return (
+			<div>
+				<RouteHandler/>
+			</div>
+		)
+	}
+}
+
+var routes = (
+	<Route handler={App}>
+		<Route name="/:query?" handler={Player} />
+	</Route>
+);
+
+Router.run(routes, (Handler) => { // Router.HistoryLocation
+	React.render(<Handler/>, document.getElementById('content'));
+});

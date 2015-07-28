@@ -73,7 +73,10 @@ let getPostTracks = (id, callback) => {
 }
 
 apiRouter.get('/track', (req, res) => {
-	let query = req.query.query.split(',')[0] || 'id49749181';
+	let query = 'id49749181';
+	if(req.query.query) {
+		query = req.query.query.split(',')[0];
+	}
 
 	if(query.startsWith('id')) {
 		let id = query.replace('id', '');
