@@ -93,22 +93,24 @@ class Player extends React.Component {
 		return (
 			<div>
 				<div className="wrapper">
-					<div style={{}}>
-						<div className="pull-left" style={{width: '460px'}}>
-							<audio/>
-						</div>
-						<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px', maxWidth: '490px', overflow: 'hidden', 'text-overflow': 'ellipsis', whiteSpace: 'nowrap', height: '36px'}}>
-						{
-							this.state.tracks && this.state.tracks.length > 0 &&
-							<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}}>
-								{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
-							</span>
-						}
-						</div>
+					<div className="container" style={{padding: 0, margin: 0}}>
 						<div className="clearfix">
-							<form className="form-inline" onSubmit={this.handleSubmit} style={{'margin-top': '2px'}}>
+							<div className="pull-left" style={{width: '460px'}}>
+								<audio/>
+							</div>
+							<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px', maxWidth: '490px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', height: '36px'}}>
+							{
+								this.state.tracks && this.state.tracks.length > 0 &&
+								<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}}>
+									{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
+								</span>
+							}
+							</div>
+						</div>
+						<div>
+							<form className="form-inline" onSubmit={this.handleSubmit} style={{marginTop: '2px'}}>
 								<div className="form-group">
-									<input type="text" className="form-control" ref="id" placeholder="id or wall" style={{width: '415px', 'margin-right': '2px'}} />
+									<input type="text" className="form-control" ref="id" placeholder="id or wall" style={{width: '415px', marginRight: '2px'}} />
 								</div>
 								<input type="submit" className="btn btn-default" value="Go" />
 							</form>
