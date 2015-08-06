@@ -22,6 +22,8 @@ class Player extends React.Component {
 		this.playTrack = this.playTrack.bind(this);
 		this.pauseTrack = this.pauseTrack.bind(this);
 		this.playThisTrack = this.playThisTrack.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+		this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
 
 		this.audio = audiojs.createAll({
 			trackEnded: function() {
@@ -66,28 +68,51 @@ class Player extends React.Component {
 			});
 	}
 	componentDidUpdate() {
-		if(!this.onceScroll && this.state.currentTrack > 0) {
-			$('li.active').prev().get(0).scrollIntoView();
+		if(!this.onceScroll) {
+			this.scrollToCurrentTrack();
 			this.onceScroll = true;
+		}
+	}
+	scrollToCurrentTrack() {
+		if(this.state.currentTrack > 0) {
+			$('li.active').prev().get(0).scrollIntoView();
 		}
 	}
 	componentWillReceiveProps(props) {
 		this.setState({id: this.props.params.query}, this.loadTracks);		
 	}
+	handleSubmit(e) {
+		e.preventDefault();
+		var id = React.findDOMNode(this.refs.id).value.trim();
+		if(id) {
+			window.location.hash = id;
+		}
+		React.findDOMNode(this.refs.id).value = '';
+	}
 	render() {
 		return (
-			<div style={{width: 'inherit'}}>
+			<div>
 				<div className="wrapper">
-					<div className="pull-left" style={{width: '460px'}}>
-						<audio/>
-					</div>
-					<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px',maxWidth: '490px', overflow: 'hidden',height: '36px'}}>
-					{
-						this.state.tracks && this.state.tracks.length > 0 &&
-						<span>
-							{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
-						</span>
-					}
+					<div style={{}}>
+						<div className="pull-left" style={{width: '460px'}}>
+							<audio/>
+						</div>
+						<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px', maxWidth: '490px', overflow: 'hidden', 'text-overflow': 'ellipsis', whiteSpace: 'nowrap', height: '36px'}}>
+						{
+							this.state.tracks && this.state.tracks.length > 0 &&
+							<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}}>
+								{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
+							</span>
+						}
+						</div>
+						<div className="clearfix">
+							<form className="form-inline" onSubmit={this.handleSubmit} style={{'margin-top': '2px'}}>
+								<div className="form-group">
+									<input type="text" className="form-control" ref="id" placeholder="id or wall" style={{width: '415px', 'margin-right': '2px'}} />
+								</div>
+								<input type="submit" className="btn btn-default" value="Go" />
+							</form>
+						</div>
 					</div>
 				</div>
 				<ul className="list-group track-list">
