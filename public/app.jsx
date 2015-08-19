@@ -46,11 +46,15 @@ class Player extends React.Component {
 			} else if (unicode == 37) {
 				this.playPrevTrack();
 				// spacebar
-			} else if (unicode == 32) {
-				this.audio.playPause();
+			} else if (unicode == 32) {				
+				this.playPauseTrack();
 				e.preventDefault();
 			}
-		})
+		});
+		$('.play-pause').on('click', (e) => {
+			let isPlaying = localStorage.getItem("isPlaying") === 'true';
+			localStorage.setItem("isPlaying", !isPlaying);
+		});
 	}
 	loadTracks() {
 		var self = this;
@@ -64,6 +68,9 @@ class Player extends React.Component {
 
 				if(tracks.length) {
 					self.audio.load(tracks[currentTrack].url);
+				}
+				if(localStorage.getItem("isPlaying") === 'true') {
+					self.playTrack();
 				}
 			});
 	}
@@ -141,6 +148,7 @@ class Player extends React.Component {
 		localStorage.setItem("currentTrack-" + this.state.id, this.state.currentTrack);
 		this.audio.load(this.state.tracks[this.state.currentTrack].url);
 		this.audio.play();
+		localStorage.setItem("isPlaying", true);
 	}
 	playPrevTrack() {
 		var self = this;
@@ -156,10 +164,20 @@ class Player extends React.Component {
 	}
 	playTrack() {
 		this.audio.play();
+		localStorage.setItem("isPlaying", true);
 	}
 	pauseTrack() {
 		this.audio.pause();
-	};
+		localStorage.setItem("isPlaying", false);
+	}
+	playPauseTrack() {
+		let isPlaying = localStorage.getItem("isPlaying") === 'true';
+		if(isPlaying) {
+			this.pauseTrack();
+		} else {
+			this.playTrack();
+		}
+	}
 }
 
 class App extends React.Component {
