@@ -99,31 +99,27 @@ class Player extends React.Component {
 	render() {
 		return (
 			<div>
-				<div className="wrapper">
-					<div className="container" style={{padding: 0, margin: 0}}>
-						<div className="clearfix">
-							<div className="pull-left" style={{width: '460px'}}>
-								<audio/>
-							</div>
-							<div className="pull-left" style={{lineHeight: '36px', margin: '0 10px', maxWidth: '490px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', height: '36px'}}>
-							{
-								this.state.tracks && this.state.tracks.length > 0 &&
-								<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}}>
-									{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
-								</span>
-							}
-							</div>
+				<nav className="navbar navbar-default navbar-fixed-top">
+					<div className="container">
+						<div className="navbar-btn navbar-left">
+							<audio/>
 						</div>
-						<div>
-							<form className="form-inline" onSubmit={this.handleSubmit} style={{marginTop: '2px'}}>
-								<div className="form-group">
-									<input type="text" className="form-control" ref="id" placeholder="id or wall" style={{width: '415px', marginRight: '2px'}} />
-								</div>
-								<input type="submit" className="btn btn-default" value="Go" />
-							</form>
+						<form className="navbar-form navbar-left" onSubmit={this.handleSubmit}>
+							<div className="form-group">
+								<input type="text" className="form-control" ref="id" placeholder="id or wall" style={{marginRight: '2px'}} />
+							</div>
+							<input type="submit" className="btn btn-default" value="Go" />
+						</form>
+						<div className="navbar-left" style={{maxWidth: '390px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+						{
+							this.state.tracks && this.state.tracks.length > 0 &&
+							<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}} className="navbar-text">
+								{this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
+							</span>
+						}
 						</div>
 					</div>
-				</div>
+				</nav>
 				<ul className="list-group track-list">
 				{
 					this.state.tracks.map((track, index) => {
