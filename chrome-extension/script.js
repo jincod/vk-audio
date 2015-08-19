@@ -1,6 +1,8 @@
 function clickHandler(info, tab) {
+	var id = info.linkUrl.match(/vk.com\/([a-z0-9\-\_]+)/i)[1];
     chrome.tabs.create({
-        url: "https://vk-audio.herokuapp.com/#/" + info.linkUrl.match(/vk.com\/([a-z0-9\-\_]+)/i)[1]
+        url: "https://vk-audio.herokuapp.com/#/" + id,
+        active: false
     });
 };
 
