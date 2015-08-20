@@ -57,7 +57,10 @@ class Player extends React.Component {
 		});
 	}
 	loadTracks() {
-		var self = this;
+		var self = this,
+			query = this.props.params.query;
+
+		window.document.title = query ? 'VK Audio - ' +  this.props.params.query : 'VK Audio';
 		superagent
 			.get('/api/track')
 			.query({query: this.props.params.query})
