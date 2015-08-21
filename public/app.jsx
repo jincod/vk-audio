@@ -87,8 +87,12 @@ class Player extends React.Component {
 		}
 	}
 	scrollToCurrentTrack() {
-		if(this.state.currentTrack > 1 && this.state.tracks.length > 0) {
-			$('li.active').prev().get(0).scrollIntoView();
+		if(this.state.tracks.length > 1) {
+			if(this.state.currentTrack > 1) {
+				$('li.active').prev().get(0).scrollIntoView();
+			} else {
+				document.body.scrollIntoView();
+			}
 		}
 	}
 	componentWillReceiveProps(props) {
