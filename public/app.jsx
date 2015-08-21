@@ -153,13 +153,23 @@ class Player extends React.Component {
 	}
 	playPrevTrack() {
 		var self = this;
-		this.setState({currentTrack: this.state.currentTrack - 1}, () => {
+		let nextTrack = this.state.currentTrack - 1;
+
+		if(this.state.currentTrack === 0) {
+			nextTrack = this.state.tracks.length - 1;
+		}
+		this.setState({currentTrack: nextTrack}, () => {
 			self._playCurrentTrack();
 		});
 	}
 	playNextTrack() {
 		var self = this;
-		this.setState({currentTrack: this.state.currentTrack + 1}, () => {
+		let nextTrack = this.state.currentTrack + 1;
+
+		if(this.state.currentTrack === (this.state.tracks.length - 1)) {
+			nextTrack = 0;
+		}
+		this.setState({currentTrack: nextTrack}, () => {
 			self._playCurrentTrack();
 		});
 	}
