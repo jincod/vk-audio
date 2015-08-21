@@ -12,11 +12,11 @@ let getAudioTracks = (id, callback) => {
 	request
 		.get(url)
 		.end((err, response) => {
-			if(err) {
-				return res.sendStatus(400, err);
+			if(err || response.body.error) {
+				return callback(err || response.body.error);
 			}
 			response.body.response.splice(0, 1);
-			callback(response.body.response);
+			callback(null, response.body.response);
 		});
 }
 
@@ -26,7 +26,7 @@ let getWallTracks = (id, callback) => {
 		.get(url)
 		.end((err, response) => {
 			if(err) {
-				return res.sendStatus(400, err);
+				return callback(err);
 			}
 
 			var result = [],
@@ -42,7 +42,7 @@ let getWallTracks = (id, callback) => {
 					};
 				}
 			};
-			callback(result);
+			callback(null, result);
 		});
 }
 
@@ -52,7 +52,7 @@ let getPostTracks = (id, callback) => {
 		.get(url)
 		.end((err, response) => {
 			if(err) {
-				return res.sendStatus(400, err);
+				return callback(err);
 			}
 
 			var result = [],
@@ -68,7 +68,7 @@ let getPostTracks = (id, callback) => {
 					};
 				}
 			};
-			callback(result);
+			callback(null, result);
 		});
 }
 
@@ -80,17 +80,26 @@ apiRouter.get('/track', (req, res) => {
 
 	if(query.startsWith('id')) {
 		let id = query.replace('id', '');
-		getAudioTracks(id, (result) => {
+		getAudioTracks(id, (err, result) => {
+			if(err) {
+				return res.sendStatus(400);
+			}
 			res.send(result);
 		});
 	} else if(query.startsWith('wall') && query.indexOf('_') === -1) {
 		let id = query.replace('wall', '');
-		getWallTracks(id, (result) => {
+		getWallTracks(id, (err, result) => {
+			if(err) {
+				return res.sendStatus(400);
+			}
 			res.send(result);
 		});
 	} else if(query.startsWith('wall') && query.indexOf('_') !== -1) {
 		let id = query.replace('wall', '');
-		getPostTracks(id, (result) => {
+		getPostTracks(id, (err, result) => {
+			if(err) {
+				return res.sendStatus(400);
+			}
 			res.send(result);
 		});
 	} else {

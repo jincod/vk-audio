@@ -65,6 +65,9 @@ class Player extends React.Component {
 			.get('/api/track')
 			.query({query: this.props.params.query})
 			.end(function(err, res) {
+				if(err) {
+					return alert('Can\' load traks');
+				}
 				var tracks = res.body,
 					currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
 				self.setState({tracks: tracks, currentTrack: currentTrack, loading: false});
