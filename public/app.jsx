@@ -52,8 +52,8 @@ class Player extends React.Component {
 			}
 		});
 		$('.play-pause').on('click', (e) => {
-			let isPlaying = localStorage.getItem("isPlaying") === 'true';
-			localStorage.setItem("isPlaying", !isPlaying);
+			let isPlaying = localStorage.getItem("isPlaying-" + this.state.id) === 'true';
+			localStorage.setItem("isPlaying-" + this.state.id, !isPlaying);
 		});
 	}
 	loadTracks() {
@@ -72,7 +72,7 @@ class Player extends React.Component {
 				if(tracks.length) {
 					self.audio.load(tracks[currentTrack].url);
 				}
-				if(localStorage.getItem("isPlaying") === 'true') {
+				if(localStorage.getItem("isPlaying-" + self.state.id) === 'true') {
 					self.playTrack();
 				}
 			});
@@ -146,8 +146,7 @@ class Player extends React.Component {
 	_playCurrentTrack() {
 		localStorage.setItem("currentTrack-" + this.state.id, this.state.currentTrack);
 		this.audio.load(this.state.tracks[this.state.currentTrack].url);
-		this.audio.play();
-		localStorage.setItem("isPlaying", true);
+		this.playTrack();
 	}
 	playPrevTrack() {
 		var self = this;
@@ -163,14 +162,14 @@ class Player extends React.Component {
 	}
 	playTrack() {
 		this.audio.play();
-		localStorage.setItem("isPlaying", true);
+		localStorage.setItem("isPlaying-" + this.state.id, true);
 	}
 	pauseTrack() {
-		this.audio.pause();
-		localStorage.setItem("isPlaying", false);
+		this.audio.pause();		
+		localStorage.setItem("isPlaying-" + this.state.id, false);
 	}
 	playPauseTrack() {
-		let isPlaying = localStorage.getItem("isPlaying") === 'true';
+		let isPlaying = localStorage.getItem("isPlaying-" + this.state.id) === 'true';
 		if(isPlaying) {
 			this.pauseTrack();
 		} else {
