@@ -1,5 +1,6 @@
 import express from 'express'
 import request from 'superagent'
+import _ from 'underscore'
 
 const accessToken = process.env.ACCESS_TOKEN;
 
@@ -72,6 +73,10 @@ let getPostTracks = (id, callback) => {
 		});
 }
 
+let sendResult = (res, tracks) => {
+	res.send(_.filter(tracks, (track) => { return track.url !== ""; }));
+}
+
 apiRouter.get('/track', (req, res) => {
 	let query = 'wall-26599838';
 	if(req.query.query) {
@@ -84,7 +89,7 @@ apiRouter.get('/track', (req, res) => {
 			if(err) {
 				return res.sendStatus(400);
 			}
-			res.send(result);
+			sendResult(res, result);
 		});
 	} else if(query.startsWith('wall') && query.indexOf('_') === -1) {
 		let id = query.replace('wall', '');
@@ -92,7 +97,7 @@ apiRouter.get('/track', (req, res) => {
 			if(err) {
 				return res.sendStatus(400);
 			}
-			res.send(result);
+			sendResult(res, result);
 		});
 	} else if(query.startsWith('wall') && query.indexOf('_') !== -1) {
 		let id = query.replace('wall', '');
@@ -100,7 +105,7 @@ apiRouter.get('/track', (req, res) => {
 			if(err) {
 				return res.sendStatus(400);
 			}
-			res.send(result);
+			sendResult(res, result);
 		});
 	} else {
 		res.send([]);

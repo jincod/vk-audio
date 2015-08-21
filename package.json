@@ -4,7 +4,8 @@
   "dependencies": {
     "superagent": "~1.2.0",
     "express": "~4.13.1",
-    "babel": "~5.8.3"
+    "babel": "~5.8.3",
+    "underscore": "~1.8.3"
   },
   "license": "MIT"
 }

@@ -87,7 +87,7 @@ class Player extends React.Component {
 		}
 	}
 	scrollToCurrentTrack() {
-		if(this.state.currentTrack > 0) {
+		if(this.state.currentTrack > 1 && this.state.tracks.length > 0) {
 			$('li.active').prev().get(0).scrollIntoView();
 		}
 	}
