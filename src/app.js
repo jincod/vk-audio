@@ -1,10 +1,8 @@
 "use strict";
 
-var Router = ReactRouter;
-var DefaultRoute = Router.DefaultRoute;
-var Link = Router.Link;
-var Route = Router.Route;
-var RouteHandler = Router.RouteHandler;
+import React from 'react'
+import { Router, Route, Link, IndexRoute, DefaultRoute, RouteHandler } from 'react-router'
+import createHistory from 'history/lib/createHashHistory'
 
 class Player extends React.Component {
 	constructor(props) {
@@ -199,18 +197,23 @@ class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<RouteHandler/>
+				{this.props.children}
 			</div>
 		)
 	}
 }
 
+let history = createHistory({
+	queryKey: false
+});
+
 var routes = (
-	<Route handler={App}>
-		<Route name="/:query?" handler={Player} />
-	</Route>
+	<Router history={history}>
+		<Route path="/" component={App}>
+			<IndexRoute component={Player} />
+			<Route path="/:query" component={Player} />
+		</Route>
+	</Router>
 );
 
-Router.run(routes, (Handler) => { // Router.HistoryLocation
-	React.render(<Handler/>, document.getElementById('content'));
-});
+React.render(routes, document.getElementById('content'));

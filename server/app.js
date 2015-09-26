@@ -116,3 +116,5 @@ app.use(express.static("public"));
 app.use('/api', apiRouter);
 
 app.listen(process.env.PORT || 3000);
+
+module.exports = app
