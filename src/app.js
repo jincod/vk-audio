@@ -1,5 +1,6 @@
 "use strict";
 
+import request from 'superagent'
 import React from 'react'
 import { Router, Route, Link, IndexRoute, DefaultRoute, RouteHandler } from 'react-router'
 import createHistory from 'history/lib/createHashHistory'
@@ -35,7 +36,7 @@ class Player extends React.Component {
 			}
 		})[0];		
 		this.loadTracks()
-		$(document).keydown((e) => {
+		document.addEventListener('keydown', (e) => {
 			let unicode = e.charCode ? e.charCode : e.keyCode;
 			// right arrow
 			if (unicode == 39) {
@@ -49,7 +50,7 @@ class Player extends React.Component {
 				e.preventDefault();
 			}
 		});
-		$('.play-pause').on('click', (e) => {
+		document.querySelector('.play-pause').addEventListener('click', (e) => {
 			let isPlaying = localStorage.getItem("isPlaying-" + this.state.id) === 'true';
 			localStorage.setItem("isPlaying-" + this.state.id, !isPlaying);
 		});
@@ -59,7 +60,7 @@ class Player extends React.Component {
 			query = this.props.params.query;
 
 		window.document.title = query ? 'VK Audio - ' +  this.props.params.query : 'VK Audio';
-		superagent
+		request
 			.get('/api/track')
 			.query({query: this.props.params.query})
 			.end(function(err, res) {
@@ -87,7 +88,7 @@ class Player extends React.Component {
 	scrollToCurrentTrack() {
 		if(this.state.tracks.length > 1) {
 			if(this.state.currentTrack > 1) {
-				$('li.active').prev().get(0).scrollIntoView();
+				document.querySelector('li.active').previousElementSibling.scrollIntoView();
 			} else {
 				document.body.scrollIntoView();
 			}
