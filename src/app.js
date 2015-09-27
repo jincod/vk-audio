@@ -59,6 +59,11 @@ class Player extends React.Component {
 		var self = this,
 			query = this.props.params.query;
 
+		if(!query) {
+			this.setState({tracks: [], currentTrack: -1});
+			return;
+		}
+
 		window.document.title = query ? 'VK Audio - ' +  this.props.params.query : 'VK Audio';
 		request
 			.get('/api/track')

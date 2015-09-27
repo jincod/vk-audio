@@ -78,7 +78,8 @@ let sendResult = (res, tracks) => {
 }
 
 apiRouter.get('/track', (req, res) => {
-	let query = 'wall-26599838';
+	var query = '';
+	
 	if(req.query.query) {
 		query = req.query.query.split(',')[0];
 	}
