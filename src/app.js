@@ -111,6 +111,28 @@ class Player extends React.Component {
 		React.findDOMNode(this.refs.id).value = '';
 	}
 	render() {
+		var trackList = 
+			<ul className="list-group track-list">
+			{
+				this.state.tracks.map((track, index) => {
+					let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
+					return (
+						<li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
+							{index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
+						</li>
+					)
+				})
+			}
+			</ul>
+
+		if(this.state.tracks.length === 0) {
+			trackList =
+				<div>
+					<h4>Take wall id or user id in search form or choose examples</h4>
+					<Link to="/wall-20833574">BBC Radio 1 / 1Xtra</Link>
+				</div>
+		}
+
 		return (
 			<div>
 				<nav className="navbar navbar-default navbar-fixed-top">
@@ -134,18 +156,7 @@ class Player extends React.Component {
 						</div>
 					</div>
 				</nav>
-				<ul className="list-group track-list">
-				{
-					this.state.tracks.map((track, index) => {
-						let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
-						return (
-							<li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
-								{index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
-							</li>
-						)
-					})
-				}
-				</ul>
+				{trackList}
 			</div>
 		);
 	}
