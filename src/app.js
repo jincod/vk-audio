@@ -13,7 +13,7 @@ class Player extends React.Component {
 			id: props.params.query,
 			tracks: [],
 			currentTrack: 0,
-			isLoading: true
+			isLoading: false
 		}
 	}
 	componentDidMount() {
@@ -66,6 +66,7 @@ class Player extends React.Component {
 		}
 
 		window.document.title = query ? 'VK Audio - ' +  query : 'VK Audio';
+		this.setState({isLoading: true});
 		request
 			.get('/api/track')
 			.query({query: query})
