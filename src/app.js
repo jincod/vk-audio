@@ -4,6 +4,7 @@ import request from 'superagent'
 import React from 'react'
 import { Router, Route, Link, IndexRoute, DefaultRoute, RouteHandler } from 'react-router'
 import createHistory from 'history/lib/createHashHistory'
+import { QueryHistory } from './query-history'
 
 class Player extends React.Component {
 	constructor(props) {
@@ -12,7 +13,7 @@ class Player extends React.Component {
 			id: props.params.query,
 			tracks: [],
 			currentTrack: 0,
-			loading: true
+			isLoading: true
 		}
 	}
 	componentDidMount() {
@@ -64,17 +65,17 @@ class Player extends React.Component {
 			return;
 		}
 
-		window.document.title = query ? 'VK Audio - ' +  this.props.params.query : 'VK Audio';
+		window.document.title = query ? 'VK Audio - ' +  query : 'VK Audio';
 		request
 			.get('/api/track')
-			.query({query: this.props.params.query})
+			.query({query: query})
 			.end(function(err, res) {
 				if(err) {
 					return alert('Can\' load traks');
 				}
 				var tracks = res.body,
 					currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
-				self.setState({tracks: tracks, currentTrack: currentTrack, loading: false});
+				self.setState({tracks: tracks, currentTrack: currentTrack, isLoading: false});
 
 				if(tracks.length) {
 					self.audio.load(tracks[currentTrack].url);
@@ -82,6 +83,7 @@ class Player extends React.Component {
 				if(localStorage.getItem("isPlaying-" + self.state.id) === 'true') {
 					self.playTrack();
 				}
+				self.updateHistory();
 			});
 	}
 	componentDidUpdate() {
@@ -110,27 +112,38 @@ class Player extends React.Component {
 		}
 		React.findDOMNode(this.refs.id).value = '';
 	}
+	updateHistory() {
+		var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
+		if(this.props.params.query && this.props.params.query !== "" && history.indexOf(this.props.params.query) === -1) {			
+			history.push(this.props.params.query);
+			localStorage.setItem('history', JSON.stringify(history));
+		}
+	}
 	render() {
-		var trackList = 
-			<ul className="list-group track-list">
-			{
-				this.state.tracks.map((track, index) => {
-					let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
-					return (
-						<li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
-							{index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
-						</li>
-					)
-				})
-			}
-			</ul>
-
-		if(this.state.tracks.length === 0) {
+		var trackList;
+			
+		if(this.state.isLoading) {
+			trackList = <div>Loading...</div>
+		} else if(this.state.tracks.length === 0) {
 			trackList =
 				<div>
 					<h4>Take wall id or user id in search form or choose examples</h4>
 					<Link to="/wall-20833574">BBC Radio 1 / 1Xtra</Link>
 				</div>
+		} else {
+			trackList = 
+				<ul className="list-group track-list">
+				{
+					this.state.tracks.map((track, index) => {
+						let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
+						return (
+							<li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
+								{index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
+							</li>
+						)
+					})
+				}
+				</ul>
 		}
 
 		return (
@@ -228,7 +241,8 @@ var routes = (
 	<Router history={history}>
 		<Route path="/" component={App}>
 			<IndexRoute component={Player} />
-			<Route path="/:query" component={Player} />
+			<Route path="history" component={QueryHistory} />
+			<Route path=":query" component={Player} />
 		</Route>
 	</Router>
 );
