@@ -13,6 +13,17 @@
 			body {font-family: 'Roboto', sans-serif;padding-top: 70px; }
 			.audiojs .play-pause {width: 40px;}
 			.track-list {cursor: pointer;}
+			.current-track {
+				max-width: 390px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+			@media (max-width: 1200px) {
+				.current-track {
+					max-width: 230px;
+				}
+			}
 		</style>
 	</head>
 	<body>

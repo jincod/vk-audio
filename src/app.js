@@ -160,7 +160,7 @@ class Player extends React.Component {
 							</div>
 							<input type="submit" className="btn btn-default" value="Go" />
 						</form>
-						<div className="navbar-left" style={{maxWidth: '390px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+						<div className="current-track navbar-left">
 						{
 							this.state.tracks && this.state.tracks.length > 0 &&
 							<span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}} className="navbar-text">
