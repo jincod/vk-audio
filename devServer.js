@@ -2,7 +2,7 @@ require('babel/register');
 var app = require('./server/app.js');
 
 var webpack = require('webpack');
-var config = require('./webpack.config.dev');
+var config = require('./webpack.config');
 
 var compiler = webpack(config);
 
