@@ -9,6 +9,7 @@ export class QueryHistory extends React.Component {
 
   render() {
     var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
+    history = history.sort();
     
     return (
       <div>
