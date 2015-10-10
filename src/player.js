@@ -49,8 +49,8 @@ export class Player extends React.Component {
       }
     });
     document.querySelector('.play-pause').addEventListener('click', (e) => {
-      let isPlaying = localStorage.getItem("isPlaying-" + this.state.id) === 'true';
-      localStorage.setItem("isPlaying-" + this.state.id, !isPlaying);
+      let isPlaying = localStorage.getItem('isPlaying-' + this.state.id) === 'true';
+      localStorage.setItem('isPlaying-' + this.state.id, !isPlaying);
     });
   }
   loadTracks() {
@@ -72,13 +72,13 @@ export class Player extends React.Component {
           return alert('Can\' load traks');
         }
         var tracks = res.body,
-          currentTrack = localStorage.getItem("currentTrack-" + self.state.id) && parseInt(localStorage.getItem("currentTrack-" + self.state.id), 10) || 0;
+          currentTrack = localStorage.getItem('currentTrack-' + self.state.id) && parseInt(localStorage.getItem('currentTrack-' + self.state.id), 10) || 0;
         self.setState({tracks: tracks, currentTrack: currentTrack, isLoading: false});
 
         if(tracks.length) {
           self.audio.load(tracks[currentTrack].url);
         }
-        if(localStorage.getItem("isPlaying-" + self.state.id) === 'true') {
+        if(localStorage.getItem('isPlaying-' + self.state.id) === 'true') {
           self.playTrack();
         }
         self.updateHistory();
@@ -112,7 +112,7 @@ export class Player extends React.Component {
   }
   updateHistory() {
     var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
-    if(this.props.params.query && this.props.params.query !== "" && history.indexOf(this.props.params.query) === -1) {      
+    if(this.props.params.query && this.props.params.query !== '' && history.indexOf(this.props.params.query) === -1) {
       history.push(this.props.params.query);
       localStorage.setItem('history', JSON.stringify(history));
     }
@@ -133,7 +133,7 @@ export class Player extends React.Component {
         <ul className="list-group track-list">
         {
           this.state.tracks.map((track, index) => {
-            let currentClass = index === this.state.currentTrack ? "list-group-item active" : "list-group-item";
+            let currentClass = index === this.state.currentTrack ? 'list-group-item active' : 'list-group-item';
             return (
               <li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
                 {index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
@@ -177,7 +177,7 @@ export class Player extends React.Component {
     });
   }
   _playCurrentTrack() {
-    localStorage.setItem("currentTrack-" + this.state.id, this.state.currentTrack);
+    localStorage.setItem('currentTrack-' + this.state.id, this.state.currentTrack);
     this.audio.load(this.state.tracks[this.state.currentTrack].url);
     this.playTrack();
   }
@@ -205,14 +205,14 @@ export class Player extends React.Component {
   }
   playTrack() {
     this.audio.play();
-    localStorage.setItem("isPlaying-" + this.state.id, true);
+    localStorage.setItem('isPlaying-' + this.state.id, true);
   }
   pauseTrack() {
     this.audio.pause();   
-    localStorage.setItem("isPlaying-" + this.state.id, false);
+    localStorage.setItem('isPlaying-' + this.state.id, false);
   }
   playPauseTrack() {
-    let isPlaying = localStorage.getItem("isPlaying-" + this.state.id) === 'true';
+    let isPlaying = localStorage.getItem('isPlaying-' + this.state.id) === 'true';
     if(isPlaying) {
       this.pauseTrack();
     } else {

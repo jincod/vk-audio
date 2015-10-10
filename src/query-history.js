@@ -18,7 +18,7 @@ export class QueryHistory extends React.Component {
           history.map((item, index) => {
             return (
               <li key={index} className="list-group-item">
-                <Link to={"/" + item}>{item}</Link>
+                <Link to={'/' + item}>{item}</Link>
               </li>
             )
           })
