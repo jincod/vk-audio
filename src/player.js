@@ -6,6 +6,14 @@ import { Link } from 'react-router'
 export class Player extends React.Component {
   constructor(props) {
     super(props);
+
+    this.playNextTrack = this.playNextTrack.bind(this);
+    this.playTrack = this.playTrack.bind(this);
+    this.pauseTrack = this.pauseTrack.bind(this);
+    this.playThisTrack = this.playThisTrack.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
+    
     this.state = {
       id: props.params.query,
       tracks: [],
@@ -15,12 +23,6 @@ export class Player extends React.Component {
   }
   componentDidMount() {
     var self = this;
-    this.playNextTrack = this.playNextTrack.bind(this);
-    this.playTrack = this.playTrack.bind(this);
-    this.pauseTrack = this.pauseTrack.bind(this);
-    this.playThisTrack = this.playThisTrack.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
 
     this.audio = audiojs.createAll({
       trackEnded: function() {
