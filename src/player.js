@@ -13,6 +13,7 @@ export class Player extends React.Component {
     this.playThisTrack = this.playThisTrack.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
+    this.showError = this.showError.bind(this);
     
     this.state = {
       id: props.params.query,
@@ -71,7 +72,8 @@ export class Player extends React.Component {
       .query({query: query})
       .end(function(err, res) {
         if(err) {
-          return alert('Can\' load traks');
+          self.showError();
+          return;
         }
         var tracks = res.body,
           currentTrack = localStorage.getItem('currentTrack-' + self.state.id) && parseInt(localStorage.getItem('currentTrack-' + self.state.id), 10) || 0;
@@ -119,10 +121,15 @@ export class Player extends React.Component {
       localStorage.setItem('history', JSON.stringify(history));
     }
   }
+  showError() {
+    this.setState({isLoading: false, isError: true});
+  }
   render() {
     var trackList;
-      
-    if(this.state.isLoading) {
+
+    if(this.state.isError) {
+      trackList = <div>Error: Can't load tracks</div>
+    } else if(this.state.isLoading) {
       trackList = <div>Loading...</div>
     } else if(this.state.tracks.length === 0) {
       trackList =
