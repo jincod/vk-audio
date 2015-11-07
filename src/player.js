@@ -1,6 +1,7 @@
 import request from 'superagent'
 import React from 'react'
 import { Link } from 'react-router'
+import { PlayList } from './playlist'
 
 
 export class Player extends React.Component {
@@ -131,26 +132,8 @@ export class Player extends React.Component {
       trackList = <div>Error: Can't load tracks</div>
     } else if(this.state.isLoading) {
       trackList = <div>Loading...</div>
-    } else if(this.state.tracks.length === 0) {
-      trackList =
-        <div>
-          <h4>Take wall id or user id in search form or choose examples</h4>
-          <Link to="/wall-20833574">BBC Radio 1 / 1Xtra</Link>
-        </div>
     } else {
-      trackList = 
-        <ul className="list-group track-list">
-        {
-          this.state.tracks.map((track, index) => {
-            let currentClass = index === this.state.currentTrack ? 'list-group-item active' : 'list-group-item';
-            return (
-              <li key={index} onClick={this.playThisTrack.bind(this, index)} className={currentClass}>
-                {index+1}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
-              </li>
-            )
-          })
-        }
-        </ul>
+      trackList = <PlayList tracks={this.state.tracks} currentTrackIndex={this.state.currentTrack} playThisTrack={this.playThisTrack}/>
     }
 
     return (
