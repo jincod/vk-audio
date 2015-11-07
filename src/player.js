@@ -2,6 +2,7 @@ import request from 'superagent'
 import React from 'react'
 import { Link } from 'react-router'
 import { PlayList } from './playlist'
+import { ActiveTrack } from './components/active-track'
 
 
 export class Player extends React.Component {
@@ -149,14 +150,15 @@ export class Player extends React.Component {
               </div>
               <input type="submit" className="btn btn-default" value="Go" />
             </form>
-            <div className="current-track navbar-left">
             {
               this.state.tracks && this.state.tracks.length > 0 &&
-              <span onClick={this.scrollToCurrentTrack} style={{cursor: 'pointer'}} className="navbar-text">
-                {this.state.currentTrack+1}. <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].artist}}></span> - <span dangerouslySetInnerHTML={{__html: this.state.tracks[this.state.currentTrack].title}}></span>
-              </span>
+              <ActiveTrack
+                scrollToCurrentTrack={this.scrollToCurrentTrack}
+                index={this.state.currentTrack+1}
+                artist={this.state.tracks[this.state.currentTrack].artist}
+                title={this.state.tracks[this.state.currentTrack].title}
+              />
             }
-            </div>
           </div>
         </nav>
         {trackList}
