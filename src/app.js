@@ -23,7 +23,7 @@ var routes = (
     <Route path="/" component={App}>
       <IndexRoute component={Player} />
       <Route path="history" component={QueryHistory} />
-      <Route path=":query" component={Player} />
+      <Route path=":playlistId" component={Player} />
     </Route>
   </Router>
 );

@@ -2,103 +2,66 @@ import request from 'superagent'
 import React from 'react'
 import { Link } from 'react-router'
 import { PlayList } from './playlist'
+import { AudioPlayer } from './components/audio-player'
 import { ActiveTrack } from './components/active-track'
 import { ChangeForm } from './components/form'
 
+const loadTracks = (query, callback) => {
+  request
+    .get('/api/track')
+    .query({query: query})
+    .end(callback);
+};
 
 export class Player extends React.Component {
   constructor(props) {
     super(props);
 
-    this.playNextTrack = this.playNextTrack.bind(this);
-    this.playTrack = this.playTrack.bind(this);
-    this.pauseTrack = this.pauseTrack.bind(this);
-    this.playThisTrack = this.playThisTrack.bind(this);
     this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
-    this.showError = this.showError.bind(this);
-    
+
     this.state = {
-      id: props.params.query,
+      playlistId: props.params.playlistId,
       tracks: [],
-      currentTrack: 0,
+      currentTrackIndex: -1,
       isLoading: false
     }
   }
   componentDidMount() {
-    var self = this;
+    const playlistId = this.state.playlistId;
 
-    this.audio = audiojs.createAll({
-      trackEnded: function() {
-        if(self.state.currentTrack === (self.state.tracks.length - 1)) {
-          self.setState({currentTrack: 0}, () => {
-            self._playCurrentTrack();
-          });
-        } else {
-          self.playNextTrack();
-        }
-      }
-    })[0];    
-    this.loadTracks()
-    document.addEventListener('keydown', (e) => {
-      let unicode = e.charCode ? e.charCode : e.keyCode;
-      // right arrow
-      if (unicode == 39) {
-        this.playNextTrack();
-        // back arrow
-      } else if (unicode == 37) {
-        this.playPrevTrack();
-        // spacebar
-      } else if (unicode == 32) {       
-        this.playPauseTrack();
-        e.preventDefault();
-      }
-    });
-    document.querySelector('.play-pause').addEventListener('click', (e) => {
-      let isPlaying = localStorage.getItem('isPlaying-' + this.state.id) === 'true';
-      localStorage.setItem('isPlaying-' + this.state.id, !isPlaying);
-    });
+    window.document.title = playlistId ? 'VK Audio - ' +  playlistId : 'VK Audio';
+
+    if(playlistId) {
+      this.setState({isLoading: true});
+      loadTracks(playlistId, this.loadTracks.bind(this));
+    }
   }
-  loadTracks() {
-    var self = this,
-      query = this.props.params.query;
 
-    if(!query) {
-      this.setState({tracks: [], currentTrack: -1});
+  loadTracks(err, res) {
+    if(err) {
+      this.showError();
       return;
     }
+    const tracks = res.body;
+    const currentTrackIndex = this.getCurrentTrackIndex();
 
-    window.document.title = query ? 'VK Audio - ' +  query : 'VK Audio';
-    this.setState({isLoading: true});
-    request
-      .get('/api/track')
-      .query({query: query})
-      .end(function(err, res) {
-        if(err) {
-          self.showError();
-          return;
-        }
-        var tracks = res.body,
-          currentTrack = localStorage.getItem('currentTrack-' + self.state.id) && parseInt(localStorage.getItem('currentTrack-' + self.state.id), 10) || 0;
-        self.setState({tracks: tracks, currentTrack: currentTrack, isLoading: false});
+    this.setState({
+      tracks: tracks,
+      currentTrackIndex: currentTrackIndex,
+      isLoading: false
+    });
 
-        if(tracks.length) {
-          self.audio.load(tracks[currentTrack].url);
-        }
-        if(localStorage.getItem('isPlaying-' + self.state.id) === 'true') {
-          self.playTrack();
-        }
-        self.updateHistory();
-      });
+    this.updateHistory();
   }
-  componentDidUpdate() {
-    if(!this.onceScroll) {
-      this.scrollToCurrentTrack();
-      this.onceScroll = true;
-    }
+
+  getCurrentTrackIndex() {
+    const currentTrackIndex = localStorage.getItem('currentTrackIndex-' + this.state.playlistId);
+    return currentTrackIndex && parseInt(currentTrackIndex, 10) || 0;
   }
+
   scrollToCurrentTrack() {
     if(this.state.tracks.length > 1) {
-      if(this.state.currentTrack > 1) {
+      if(this.state.currentTrackIndex > 1) {
         document.querySelector('li.active').previousElementSibling.scrollIntoView();
       } else {
         document.body.scrollIntoView();
@@ -107,99 +70,68 @@ export class Player extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    this.setState({id: this.props.params.query}, this.loadTracks);    
+    // this.setState({playlistId: this.props.params.playlistId}, this.loadTracks);
+    throw 'Not implemented';
   }
 
   updateHistory() {
-    var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
-    if(this.props.params.query && this.props.params.query !== '' && history.indexOf(this.props.params.query) === -1) {
-      history.push(this.props.params.query);
+    var history = localStorage.getItem('history')
+      && JSON.parse(localStorage.getItem('history')) || [];
+    
+    if(this.state.playlistId !== '' && history.indexOf(this.state.playlistId) === -1) {
+      history.push(this.state.playlistId);
       localStorage.setItem('history', JSON.stringify(history));
     }
   }
+
   showError() {
     this.setState({isLoading: false, isError: true});
   }
-  render() {
-    var trackList;
+
+  playThisTrack(index) {
+    this.setState({currentTrackIndex: index});
+    localStorage.setItem(`currentTrackIndex-${this.state.playlistId}`, index);
+    localStorage.setItem(`isPlaying-${this.state.playlistId}`, 'true');
+  }
+
+  renderPlaylist() {
+    var playlist;
 
     if(this.state.isError) {
-      trackList = <div>Error: Can't load tracks</div>
+      playlist = <div>Error: Can't load tracks</div>
     } else if(this.state.isLoading) {
-      trackList = <div>Loading...</div>
+      playlist = <div>Loading...</div>
     } else {
-      trackList = <PlayList tracks={this.state.tracks} currentTrackIndex={this.state.currentTrack} playThisTrack={this.playThisTrack}/>
+      playlist = <PlayList tracks={this.state.tracks} currentTrackIndex={this.state.currentTrackIndex} playThisTrack={this.playThisTrack.bind(this)}/>
+    }
+
+    return playlist;
+  }
+
+  render() {
+    const {tracks, currentTrackIndex} = this.state;
+    const track = tracks[currentTrackIndex];
+    if(track) {
+      track.isPlaying = localStorage.getItem('isPlaying-' + this.state.playlistId) === 'true';
     }
 
     return (
       <div>
         <nav className="navbar navbar-default navbar-fixed-top">
           <div className="container">
-            <div className="navbar-btn navbar-left">
-              <audio/>
-            </div>
-            <ChangeForm />
             {
-              this.state.tracks && this.state.tracks.length > 0 &&
-              <ActiveTrack
-                scrollToCurrentTrack={this.scrollToCurrentTrack}
-                index={this.state.currentTrack+1}
-                artist={this.state.tracks[this.state.currentTrack].artist}
-                title={this.state.tracks[this.state.currentTrack].title}
-              />
+              track && <AudioPlayer track={track} />
             }
+            <ChangeForm />
+            <ActiveTrack
+              scrollToCurrentTrack={this.scrollToCurrentTrack}
+              currentTrackIndex={this.state.currentTrackIndex}
+              tracks={this.state.tracks}
+            />
           </div>
         </nav>
-        {trackList}
+        {this.renderPlaylist()}
       </div>
     );
-  }
-  playThisTrack(index) {
-    this.setState({currentTrack: index}, () => {
-      this._playCurrentTrack();
-    });
-  }
-  _playCurrentTrack() {
-    localStorage.setItem('currentTrack-' + this.state.id, this.state.currentTrack);
-    this.audio.load(this.state.tracks[this.state.currentTrack].url);
-    this.playTrack();
-  }
-  playPrevTrack() {
-    var self = this;
-    let nextTrack = this.state.currentTrack - 1;
-
-    if(this.state.currentTrack === 0) {
-      nextTrack = this.state.tracks.length - 1;
-    }
-    this.setState({currentTrack: nextTrack}, () => {
-      self._playCurrentTrack();
-    });
-  }
-  playNextTrack() {
-    var self = this;
-    let nextTrack = this.state.currentTrack + 1;
-
-    if(this.state.currentTrack === (this.state.tracks.length - 1)) {
-      nextTrack = 0;
-    }
-    this.setState({currentTrack: nextTrack}, () => {
-      self._playCurrentTrack();
-    });
-  }
-  playTrack() {
-    this.audio.play();
-    localStorage.setItem('isPlaying-' + this.state.id, true);
-  }
-  pauseTrack() {
-    this.audio.pause();   
-    localStorage.setItem('isPlaying-' + this.state.id, false);
-  }
-  playPauseTrack() {
-    let isPlaying = localStorage.getItem('isPlaying-' + this.state.id) === 'true';
-    if(isPlaying) {
-      this.pauseTrack();
-    } else {
-      this.playTrack();
-    }
   }
 }
