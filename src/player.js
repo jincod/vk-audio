@@ -3,6 +3,7 @@ import React from 'react'
 import { Link } from 'react-router'
 import { PlayList } from './playlist'
 import { ActiveTrack } from './components/active-track'
+import { ChangeForm } from './components/form'
 
 
 export class Player extends React.Component {
@@ -13,7 +14,6 @@ export class Player extends React.Component {
     this.playTrack = this.playTrack.bind(this);
     this.pauseTrack = this.pauseTrack.bind(this);
     this.playThisTrack = this.playThisTrack.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
     this.showError = this.showError.bind(this);
     
@@ -105,17 +105,11 @@ export class Player extends React.Component {
       }
     }
   }
+
   componentWillReceiveProps(props) {
     this.setState({id: this.props.params.query}, this.loadTracks);    
   }
-  handleSubmit(e) {
-    e.preventDefault();
-    var id = React.findDOMNode(this.refs.id).value.trim();
-    if(id) {
-      window.location.hash = id;
-    }
-    React.findDOMNode(this.refs.id).value = '';
-  }
+
   updateHistory() {
     var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
     if(this.props.params.query && this.props.params.query !== '' && history.indexOf(this.props.params.query) === -1) {
@@ -144,12 +138,7 @@ export class Player extends React.Component {
             <div className="navbar-btn navbar-left">
               <audio/>
             </div>
-            <form className="navbar-form navbar-left" onSubmit={this.handleSubmit}>
-              <div className="form-group">
-                <input type="text" className="form-control" ref="id" placeholder="id or wall" style={{marginRight: '2px'}} />
-              </div>
-              <input type="submit" className="btn btn-default" value="Go" />
-            </form>
+            <ChangeForm />
             {
               this.state.tracks && this.state.tracks.length > 0 &&
               <ActiveTrack
