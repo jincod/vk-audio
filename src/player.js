@@ -70,8 +70,13 @@ export class Player extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    // this.setState({playlistId: this.props.params.playlistId}, this.loadTracks);
-    throw 'Not implemented';
+    const playlistId = props.params.playlistId;
+    if(playlistId) {
+      this.setState({
+        isLoading: true,
+        playlistId: playlistId
+      }, loadTracks(playlistId, this.loadTracks.bind(this)));
+    }
   }
 
   updateHistory() {

@@ -1,5 +1,6 @@
 import request from 'superagent'
 import React from 'react'
+import ReactDOM from 'react-dom'
 import { Router, Route, IndexRoute } from 'react-router'
 import createHistory from 'history/lib/createHashHistory'
 import { Player } from './player'
@@ -28,4 +29,4 @@ var routes = (
   </Router>
 );
 
-React.render(routes, document.getElementById('content'));
+ReactDOM.render(routes, document.getElementById('content'));

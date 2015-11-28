@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactDOM from 'react-dom'
 
 export class ChangeForm extends React.Component {
   constructor(props) {
@@ -9,11 +10,11 @@ export class ChangeForm extends React.Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    var id = React.findDOMNode(this.refs.id).value.trim();
+    var id = ReactDOM.findDOMNode(this.refs.id).value.trim();
     if(id) {
       window.location.hash = id;
     }
-    React.findDOMNode(this.refs.id).value = '';
+    ReactDOM.findDOMNode(this.refs.id).value = '';
   }
 
   render() {
