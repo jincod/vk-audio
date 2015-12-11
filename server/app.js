@@ -1,116 +1,103 @@
-import express from 'express'
-import request from 'superagent'
-import _ from 'underscore'
+import express from 'express';
+import superagent from 'superagent';
+import superagentPromise from 'superagent-promise';
+import _ from 'underscore';
+
+const request = superagentPromise(superagent, Promise);
 
 const accessToken = process.env.ACCESS_TOKEN;
 
 let app = express();
 let apiRouter = express.Router();
 
-let getAudioTracks = (id, callback) => {
-	let url = 'https://api.vk.com/method/audio.get?access_token='
-		+ accessToken + '&owner_id=' + id;
-	request
+const getAudioTracks = (id) => {
+	const url = `https://api.vk.com/method/audio.get?access_token=${accessToken}&owner_id=${id}`;
+	return request
 		.get(url)
-		.end((err, response) => {
-			if(err || response.body.error) {
-				return callback(err || response.body.error);
-			}
+		.end()
+		.then((response) => {
 			response.body.response.splice(0, 1);
-			callback(null, response.body.response);
+			return response.body.response;
 		});
 }
 
-let getWallTracks = (id, callback) => {
-	let url = 'https://api.vk.com/method/wall.get?count=300&owner_id=' + id;
-	request
-		.get(url)
-		.end((err, response) => {
-			if(err) {
-				return callback(err);
-			}
+const getWallTracks = (id) => {
+	const url = `https://api.vk.com/method/wall.get?count=300&owner_id=${id}`;
 
-			var result = [],
-				posts = response.body.response.slice(1);
+	return request
+		.get(url)
+		.end()
+		.then((response) => {
+			const result = [];
+			const posts = response.body.response.slice(1);
+
 			for (var i = 0; i < posts.length; i++) {
-				var attachments = posts[i].attachments;
+				const attachments = posts[i].attachments;
 				if(attachments) {
 					for (var j = 0; j < attachments.length; j++) {
-						var attachment = attachments[j];
+						const attachment = attachments[j];
 						if(attachment.audio) {
 							result.push(attachment.audio);
 						}
 					};
 				}
 			};
-			callback(null, result);
+			return result;
 		});
 }
 
-let getPostTracks = (id, callback) => {
-	let url = 'https://api.vk.com/method/wall.getById?count=300&posts=' + id;
+const getPostTracks = (id) => {
+	const url = `https://api.vk.com/method/wall.getById?count=300&posts=${id}`;
 	request
 		.get(url)
-		.end((err, response) => {
-			if(err) {
-				return callback(err);
-			}
+		.end()
+		.then((response) => {
+			const result = [];
+			const posts = response.body.response;
 
-			var result = [],
-				posts = response.body.response;
 			for (var i = 0; i < posts.length; i++) {
-				var attachments = posts[i].attachments;
+				const attachments = posts[i].attachments;
 				if(attachments) {
 					for (var j = 0; j < attachments.length; j++) {
-						var attachment = attachments[j];
+						const attachment = attachments[j];
 						if(attachment.audio) {
 							result.push(attachment.audio);
 						}
 					};
 				}
 			};
-			callback(null, result);
+			return result;
 		});
-}
-
-let sendResult = (res, tracks) => {
-	res.send(_.filter(tracks, (track) => { return track.url !== ""; }));
 }
 
 apiRouter.get('/track', (req, res) => {
-	var query = '';
-	
-	if(req.query.query) {
-		query = req.query.query.split(',')[0];
-	}
+	const query = req.query.query || '';
+	const ids = query.split(',');
 
-	if(query.startsWith('id')) {
-		let id = query.replace('id', '');
-		getAudioTracks(id, (err, result) => {
-			if(err) {
-				return res.sendStatus(400);
-			}
-			sendResult(res, result);
+	const promises = ids.map((query) => {
+		if(query.startsWith('id')) {
+			return getAudioTracks(query.replace('id', ''));
+		} else if(query.startsWith('wall') && query.indexOf('_') === -1) {
+			return getWallTracks(query.replace('wall', ''));
+		} else if(query.startsWith('wall') && query.indexOf('_') !== -1) {
+			return getPostTracks(query.replace('wall', ''));
+		}
+		return Promise.resolve([]);
+	});
+
+	Promise.all(promises)
+		.then((results) => {
+			return [].concat.apply([], results);
+		})
+		.then((result) => {
+			return _.filter(result, (item) => { return item.url !== ""; });
+		})
+		.then((result) => {
+			return res.send(result);
+		})
+		.catch((err) => {
+			return res.sendStatus(400);
 		});
-	} else if(query.startsWith('wall') && query.indexOf('_') === -1) {
-		let id = query.replace('wall', '');
-		getWallTracks(id, (err, result) => {
-			if(err) {
-				return res.sendStatus(400);
-			}
-			sendResult(res, result);
-		});
-	} else if(query.startsWith('wall') && query.indexOf('_') !== -1) {
-		let id = query.replace('wall', '');
-		getPostTracks(id, (err, result) => {
-			if(err) {
-				return res.sendStatus(400);
-			}
-			sendResult(res, result);
-		});
-	} else {
-		res.send([]);
-	}
 });
 
 app.use(express.static("public"));
