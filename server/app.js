@@ -93,6 +93,9 @@ apiRouter.get('/track', (req, res) => {
 			return _.filter(result, (item) => { return item.url !== ""; });
 		})
 		.then((result) => {
+			return _.uniq(result, (item) => { return `${item.artist}${item.title}`; });
+		})
+		.then((result) => {
 			return res.send(result);
 		})
 		.catch((err) => {
