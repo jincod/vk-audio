@@ -23,7 +23,6 @@ const getAudioTracks = (id) => {
 
 const getWallTracks = (id) => {
 	const url = `https://api.vk.com/method/wall.get?count=300&owner_id=${id}`;
-
 	return request
 		.get(url)
 		.end()
@@ -48,7 +47,7 @@ const getWallTracks = (id) => {
 
 const getPostTracks = (id) => {
 	const url = `https://api.vk.com/method/wall.getById?count=300&posts=${id}`;
-	request
+	return request
 		.get(url)
 		.end()
 		.then((response) => {
