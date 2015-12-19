@@ -15,7 +15,7 @@ export class AudioPlayer extends React.Component {
 
     this.audio = audiojs.createAll({
       trackEnded: () => {
-        self.playNextTrack();
+        self.props.playNextTrack();
       }
     })[0];
 
@@ -24,13 +24,23 @@ export class AudioPlayer extends React.Component {
     if(track.isPlaying) {
       this.audio.play();
     }
+
+    document.querySelector('.play-pause').addEventListener('click', (e) => {
+      const playlistId = this.props.track.playlistId;
+      const isPlaying = localStorage.getItem('isPlaying-' + playlistId) === 'true';
+      localStorage.setItem('isPlaying-' + playlistId, !isPlaying);
+    });
   }
 
   componentDidUpdate() {
     const {track} = this.props;
 
+    this.audio.load(track.url);
+    
     if(track.isPlaying) {
       this.audio.play();
+    } else {
+      this.audio.pause();
     }
   }
 
