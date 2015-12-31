@@ -35,7 +35,9 @@ export class AudioPlayer extends React.Component {
   componentDidUpdate() {
     const {track} = this.props;
 
-    this.audio.load(track.url);
+    if(this.audio.source.src !== track.url) {
+      this.audio.load(track.url);
+    }
     
     if(track.isPlaying) {
       this.audio.play();
