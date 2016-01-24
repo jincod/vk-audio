@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http';
 import superagent from 'superagent';
 import superagentPromise from 'superagent-promise';
 import _ from 'underscore';
@@ -94,12 +95,32 @@ apiRouter.get('/track', (req, res) => {
 		.then((result) => {
 			return _.uniq(result, (item) => { return `${item.artist}${item.title}`; });
 		})
+		.then((result) => result.map((item) => {
+			item.url = '/api/proxy?url=' + item.url;
+			return item;
+		}))
 		.then((result) => {
 			return res.send(result);
 		})
 		.catch((err) => {
 			return res.sendStatus(400);
 		});
+});
+
+apiRouter.get('/proxy', (req, res) => {
+	var newReq = http.request(req.query.url, (newRes) => {
+			const length = newRes.headers['content-length'];
+			res.setHeader('Content-Type', 'audio/mpeg');
+			res.setHeader('Content-Length', length);
+			res.setHeader('Content-Range', `bytes 0-${length-1}/${length}`);
+			newRes.pipe(res);
+		})
+		.on('error', (err) => {
+	    res.statusCode = 500;
+	    res.end();
+	  });
+
+  req.pipe(newReq);
 });
 
 app.use(express.static("public"));
