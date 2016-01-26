@@ -1,7 +1,6 @@
 import superagent from 'superagent';
 import superagentPromise from 'superagent-promise';
 import _ from 'underscore';
-import jsonp from 'superagent-jsonp';
 
 const request = superagentPromise(superagent, Promise);
 
