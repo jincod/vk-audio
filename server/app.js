@@ -110,6 +110,7 @@ apiRouter.get('/track', (req, res) => {
 apiRouter.get('/proxy', (req, res) => {
 	var newReq = http.request(req.query.url, (newRes) => {
 			const length = newRes.headers['content-length'];
+			res.setHeader('Cache-Control', 'max-age=1468800');
 			res.setHeader('Content-Type', 'audio/mpeg');
 			res.setHeader('Content-Length', length);
 			res.setHeader('Content-Range', `bytes 0-${length-1}/${length}`);

@@ -1,17 +1,12 @@
-import request from 'superagent'
-import React from 'react'
-import { Link } from 'react-router'
-import { PlayList } from './playlist'
-import { AudioPlayer } from './components/audio-player'
-import { ActiveTrack } from './components/active-track'
-import { ChangeForm } from './components/form'
-
-const loadTracks = (query, callback) => {
-  request
-    .get('/api/track')
-    .query({query: query})
-    .end(callback);
-};
+import _ from 'underscore';
+import request from 'superagent';
+import React from 'react';
+import { Link } from 'react-router';
+import { PlayList } from './playlist';
+import { loadTracks } from './api-wrapper';
+import { AudioPlayer } from './components/audio-player';
+import { ActiveTrack } from './components/active-track';
+import { ChangeForm } from './components/form';
 
 export class Player extends React.Component {
   constructor(props) {
@@ -62,12 +57,11 @@ export class Player extends React.Component {
     }
   }
 
-  loadTracks(err, res) {
+  loadTracks(err, tracks) {
     if(err) {
       this.showError();
       return;
     }
-    const tracks = res.body;
     const currentTrackIndex = this.getCurrentTrackIndex();
 
     this.setState({

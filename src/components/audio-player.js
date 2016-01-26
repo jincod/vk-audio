@@ -1,6 +1,5 @@
 import React from 'react'
 
-
 export class AudioPlayer extends React.Component {
   constructor(props) {
     super(props);
@@ -14,9 +13,7 @@ export class AudioPlayer extends React.Component {
     var self = this;
 
     this.audio = audiojs.createAll({
-      trackEnded: () => {
-        self.props.playNextTrack();
-      }
+      trackEnded: () => self.props.playNextTrack()
     })[0];
 
     const {track} = this.props;
@@ -51,7 +48,7 @@ export class AudioPlayer extends React.Component {
 
     return (
       <div className="navbar-btn navbar-left">
-        <audio id='audio' ref='audio' src={track.url}></audio>
+        <audio id="audio" ref="audio" src={track.url}></audio>
       </div>
     );
   }
