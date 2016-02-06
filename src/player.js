@@ -164,7 +164,7 @@ export class Player extends React.Component {
 
     return (
       <div>
-        <nav className="navbar navbar-default navbar-fixed-top">
+        <nav className="navbar navbar-fixed-top">
           <div className="container">
             {
               track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
@@ -177,7 +177,9 @@ export class Player extends React.Component {
             />
           </div>
         </nav>
-        {this.renderPlaylist()}
+        <div className="container">
+          {this.renderPlaylist()}
+        </div>
       </div>
     );
   }
