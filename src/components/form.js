@@ -19,7 +19,7 @@ export class ChangeForm extends React.Component {
 
   render() {
     return (
-      <form className="navbar-form navbar-left" onSubmit={this.handleSubmit}>
+      <form className="navbar-form navbar-left find-form" onSubmit={this.handleSubmit}>
         <div className="form-group">
           <input type="text" className="form-control" ref="id" placeholder="id or wall" />
         </div>
