@@ -2,11 +2,10 @@ import 'babel-polyfill';
 import request from 'superagent'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, IndexRoute } from 'react-router'
-import createHistory from 'history/lib/createHashHistory'
+import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
+import { createHashHistory } from 'history';
 import { Player } from './player'
 import { QueryHistory } from './query-history'
-
 
 class App extends React.Component {
   render() {
@@ -18,10 +17,10 @@ class App extends React.Component {
   }
 }
 
-var history = createHistory({queryKey: false});
+const appHistory = useRouterHistory(createHashHistory)({ queryKey: false });
 
 var routes = (
-  <Router history={history}>
+  <Router history={appHistory}>
     <Route path="/" component={App}>
       <IndexRoute component={Player} />
       <Route path="history" component={QueryHistory} />

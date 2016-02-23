@@ -12,15 +12,15 @@
     "babel-loader": "^5.1.2",
     "babel-polyfill": "^6.5.0",
     "eslint": "^1.10.2",
-    "express": "~4.13.1",
-    "history": "^1.13.1",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3",
-    "react-router": "^1.0.0",
+    "express": "^4.13.4",
+    "history": "^2.0.0",
+    "react": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-router": "^2.0.0",
     "superagent": "~1.2.0",
     "superagent-promise": "^1.0.3",
     "underscore": "~1.8.3",
-    "webpack": "^1.9.6"
+    "webpack": "^1.12.14"
   },
   "devDependencies": {
     "babel-eslint": "^3.1.9",
