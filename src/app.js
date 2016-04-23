@@ -7,6 +7,8 @@ import { createHashHistory } from 'history';
 import { Player } from './player'
 import { QueryHistory } from './query-history'
 
+require('./styles/styles.less');
+
 class App extends React.Component {
   render() {
     return (

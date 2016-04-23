@@ -47,7 +47,7 @@ export class AudioPlayer extends React.Component {
     const {track} = this.props;
 
     return (
-      <div className="navbar-btn navbar-left">
+      <div className="player">
         <audio id="audio" ref="audio" src={track.url}></audio>
       </div>
     );

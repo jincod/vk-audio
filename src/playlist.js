@@ -24,6 +24,6 @@ export class PlayList extends React.Component {
       track.currentTrackIndex = this.props.currentTrackIndex;
       return <PlayListItem key={index} track={track} playThisTrack={this.props.playThisTrack} />
     });
-    return <ul className="list-group track-list">{items}</ul>;
+    return <div className="playlist">{items}</div>;
   }
 }

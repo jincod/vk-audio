@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-export class ChangeForm extends React.Component {
+export class GoForm extends React.Component {
   constructor(props) {
     super(props);
 
@@ -19,11 +19,8 @@ export class ChangeForm extends React.Component {
 
   render() {
     return (
-      <form className="navbar-form navbar-left find-form" onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <input type="text" className="form-control" ref="id" placeholder="id or wall" />
-        </div>
-        <input type="submit" className="btn btn-default" value="Go" />
+      <form className="go-form" onSubmit={this.handleSubmit}>
+        <input type="text" className="go-form__input" ref="id" placeholder="id or wall" />
       </form>
     );
   }

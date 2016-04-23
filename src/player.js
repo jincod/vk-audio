@@ -6,7 +6,7 @@ import { PlayList } from './playlist';
 import { loadTracks } from './api-wrapper';
 import { AudioPlayer } from './components/audio-player';
 import { ActiveTrack } from './components/active-track';
-import { ChangeForm } from './components/form';
+import { GoForm } from './components/go-form';
 
 export class Player extends React.Component {
   constructor(props) {
@@ -81,7 +81,7 @@ export class Player extends React.Component {
   scrollToCurrentTrack() {
     if(this.state.tracks.length > 1) {
       if(this.state.currentTrackIndex > 1) {
-        document.querySelector('li.active').previousElementSibling.scrollIntoView();
+        document.querySelector('.playlist__item_active').previousElementSibling.scrollIntoView();
       } else {
         document.body.scrollIntoView();
       }
@@ -163,23 +163,19 @@ export class Player extends React.Component {
     }
 
     return (
-      <div>
-        <nav className="navbar navbar-fixed-top">
-          <div className="container">
-            {
-              track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
-            }
-            <ChangeForm />
-            <ActiveTrack
-              scrollToCurrentTrack={this.scrollToCurrentTrack}
-              currentTrackIndex={this.state.currentTrackIndex}
-              tracks={this.state.tracks}
-            />
-          </div>
+      <div className="layout">
+        <nav className="navbar">
+          {
+            track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
+          }
+          <GoForm />
+          <ActiveTrack
+            scrollToCurrentTrack={this.scrollToCurrentTrack}
+            currentTrackIndex={this.state.currentTrackIndex}
+            tracks={this.state.tracks}
+          />
         </nav>
-        <div className="container">
-          {this.renderPlaylist()}
-        </div>
+        {this.renderPlaylist()}
       </div>
     );
   }
