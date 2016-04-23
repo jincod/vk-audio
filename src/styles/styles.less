@@ -22,24 +22,41 @@ body {
 	@media (min-width: 1200px) {
 		width: 1170px;
 	}
+
+	&_main {
+		margin-bottom: 80px;
+	}
 }
 
 .navbar {
 	display: flex;
 	flex-wrap: wrap;
 	justify-content: space-between;
-	margin-bottom: 20px;
+	align-items: center;
+}
+
+.navbar-fixed {
+	position: fixed;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.4);
 }
 
 .go-form {
-	margin: 20px 0;
+	padding: 15px 0;
+	width: 100%;
 
 	@media (min-width: 992px) {
+		margin: 20px 0;
 		margin: 0;
+		width: auto;
 	}
 
 	&__input {
 		border: none;
+		box-sizing: border-box;
+		width: 100%;
 
 		padding: 5px 10px 5px 30px;
 		border-radius: 10px;
@@ -63,9 +80,11 @@ body {
 .current-track {
 	color: #fff;
 	cursor: pointer;
+	padding-bottom: 10px;
 
 	@media (min-width: 992px) {
 		margin: 10px 0;
+		padding: 0;
 	}
 }
 
@@ -128,6 +147,16 @@ body {
 		&_active {
 			background-color: #e25042;
 		}
+	}
+}
+
+.player {
+	order: 1;
+	margin: 0 -15px;
+
+	@media (min-width: 992px) {
+		order: 0;
+		margin: 0;
 	}
 }
 

@@ -163,19 +163,25 @@ export class Player extends React.Component {
     }
 
     return (
-      <div className="layout">
-        <nav className="navbar">
-          {
-            track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
-          }
-          <GoForm />
-          <ActiveTrack
-            scrollToCurrentTrack={this.scrollToCurrentTrack}
-            currentTrackIndex={this.state.currentTrackIndex}
-            tracks={this.state.tracks}
-          />
-        </nav>
-        {this.renderPlaylist()}
+      <div>
+        <div className="navbar-fixed">
+          <div className="layout">
+            <nav className="navbar">
+              {
+                track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
+              }
+              <GoForm />
+              <ActiveTrack
+                scrollToCurrentTrack={this.scrollToCurrentTrack}
+                currentTrackIndex={this.state.currentTrackIndex}
+                tracks={this.state.tracks}
+              />
+            </nav>
+          </div>
+        </div>
+        <div className="layout layout_main">
+          {this.renderPlaylist()}
+        </div>
       </div>
     );
   }
