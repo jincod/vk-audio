@@ -30,7 +30,7 @@ body {
 
 .navbar {
 	display: flex;
-	flex-wrap: wrap;
+	flex-wrap: nowrap;
 	justify-content: space-between;
 	align-items: center;
 }
@@ -48,8 +48,7 @@ body {
 	width: 100%;
 
 	@media (min-width: 992px) {
-		margin: 20px 0;
-		margin: 0;
+		margin: 0 10px;
 		width: auto;
 	}
 
@@ -64,7 +63,7 @@ body {
 
 		background-image: data-uri('image/svg+xml;charset=UTF-8', '../images/search.svg');
 		background-repeat: no-repeat;
-	    background-position: 5px 5px;
+	    	background-position: 5px 5px;
 		background-size: 20px 20px;
 	}
 }
