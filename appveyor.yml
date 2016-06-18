@@ -1,0 +1,14 @@
+environment:
+  SURGE_LOGIN:
+    secure: xwx2u2E5XvD3wz4oNQQrjqm8/JJWZ3MVRqKie0GbluE=
+  SURGE_TOKEN:
+    secure: 6BPe7nl9jCmWXSUiHuMUZlAqBA+CI31oJzGC8yizAv84IO+01f30t7IBvaDUYPhz
+install:
+  - ps: Install-Product node 0
+  - npm install -g npm
+  - npm install
+build: off
+build_script:
+  - npm run build
+deploy_script:
+  - npm run deploy

@@ -50,6 +50,8 @@
   },
   "scripts": {
     "webpack": "webpack",
-    "postinstall": "if [ \"$NODE_ENV\" = production ]; then webpack; fi"
+    "postinstall": "if [ \"$NODE_ENV\" = production ]; then webpack; fi",
+    "build": "webpack --config  ./webpack/webpack.config.prod.js",
+    "deploy": "surge ./public"
   }
 }
