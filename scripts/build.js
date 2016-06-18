@@ -7,15 +7,15 @@ if (process.env.NODE_ENV !== 'production') {
 
 webpack(config, function(err, stats) {
 	var exitCode = 0;
-    if (err) {
-    	console.log(err);
-    	exitCode = 1;
-    }
+	if (err) {
+		console.log(err);
+		exitCode = 1;
+	}
 
-    if (stats.hasErrors() || stats.hasWarnings()) {
-    	exitCode = 1;
-    }
+	if (stats.hasErrors() || stats.hasWarnings()) {
+		exitCode = 1;
+	}
 
-  	console.log(stats.toString());
-  	process.exit(exitCode);
+	console.log(stats.toString({chunks: false}));
+	process.exit(exitCode);
 });
