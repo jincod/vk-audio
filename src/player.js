@@ -170,7 +170,6 @@ export class Player extends React.Component {
               {
                 track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
               }
-              <GoForm />
               <ActiveTrack
                 scrollToCurrentTrack={this.scrollToCurrentTrack}
                 currentTrackIndex={this.state.currentTrackIndex}
