@@ -62,7 +62,11 @@ export class Player extends React.Component {
       this.showError();
       return;
     }
-    const currentTrackIndex = this.getCurrentTrackIndex();
+    let currentTrackIndex = this.getCurrentTrackIndex();
+
+    if (currentTrackIndex >= tracks.length) {
+      currentTrackIndex = 0;
+    }
 
     this.setState({
       tracks: tracks,
