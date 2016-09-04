@@ -10,23 +10,23 @@ const accessToken = process.env.ACCESS_TOKEN;
 let app = express();
 let apiRouter = express.Router();
 
-const getAudioTracks = (id) => {
+const getAudioTracks = id => {
 	const url = `https://api.vk.com/method/audio.get?access_token=${accessToken}&owner_id=${id}`;
 	return request
 		.get(url)
 		.end()
-		.then((response) => {
+		.then(response => {
 			response.body.response.splice(0, 1);
 			return response.body.response;
 		});
 }
 
-const getWallTracks = (id) => {
+const getWallTracks = id => {
 	const url = `https://api.vk.com/method/wall.get?count=300&owner_id=${id}`;
 	return request
 		.get(url)
 		.end()
-		.then((response) => {
+		.then(response => {
 			const result = [];
 			const posts = response.body.response.slice(1);
 
@@ -45,12 +45,12 @@ const getWallTracks = (id) => {
 		});
 }
 
-const getPostTracks = (id) => {
+const getPostTracks = id => {
 	const url = `https://api.vk.com/method/wall.getById?count=300&posts=${id}`;
 	return request
 		.get(url)
 		.end()
-		.then((response) => {
+		.then(response => {
 			const result = [];
 			const posts = response.body.response;
 
@@ -85,25 +85,15 @@ apiRouter.get('/track', (req, res) => {
 	});
 
 	Promise.all(promises)
-		.then((results) => {
-			return [].concat.apply([], results);
-		})
-		.then((result) => {
-			return _.filter(result, (item) => { return item.url !== ""; });
-		})
-		.then((result) => {
-			return _.uniq(result, (item) => { return `${item.artist}${item.title}`; });
-		})
-		.then((result) => {
-			return res.send(result);
-		})
-		.catch((err) => {
-			return res.sendStatus(400);
-		});
+		.then(results => [].concat.apply([], results))
+		.then(result => _.filter(result, (item) => { return item.url !== ''; }))
+		.then(result => _.uniq(result, (item) => { return `${item.artist}${item.title}`; }))
+		.then(result => res.send(result))
+		.catch(err => res.sendStatus(400));
 });
 
 
-app.use(express.static("public"));
+app.use(express.static('public'));
 app.use('/api', apiRouter);
 
 app.listen(process.env.PORT || 3000);
