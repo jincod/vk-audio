@@ -33,6 +33,19 @@ const getData = (url, skipFirst) => {
 	});
 }
 
+const getPrivateTracks = url => {
+	const callbackName = `callback${new Date().getTime()}`;
+	url = `${url}&callback=${callbackName}`;
+
+	return new Promise((resolve, reject) => {
+		window[callbackName] = data => resolve(data.response.slice(1));
+
+		var script = document.createElement('script');
+		script.src = url;
+		document.head.appendChild(script);
+	});
+}
+
 const loadTracks = (query, callback) => {
 	const ids = query.split(',');
 
@@ -43,7 +56,12 @@ const loadTracks = (query, callback) => {
 	  } else if(query.startsWith('wall') && query.indexOf('_') !== -1) {
 	  	const url = `https://api.vk.com/method/wall.getById?count=300&posts=${query.replace('wall', '')}`;
 	  	return getData(url);
-	  }
+	  } else if (query.startsWith('id') && window.accessToken) {
+	  	const id = query.replace('id', '');
+	  	const url = `https://api.vk.com/method/audio.get?access_token=${accessToken}&owner_id=${id}`;
+
+	  	return getPrivateTracks(url);
+	  } 
 	  return Promise.resolve([]);
 	});
 
