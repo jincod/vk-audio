@@ -14,6 +14,7 @@ export class Player extends React.Component {
 
     this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
+    this.loadTracks = this.loadTracks.bind(this);
 
     this.state = {
       playlistId: props.params.playlistId,
@@ -30,7 +31,7 @@ export class Player extends React.Component {
 
     if(playlistId) {
       this.setState({isLoading: true});
-      loadTracks(playlistId, this.loadTracks.bind(this));
+      loadTracks(playlistId, this.loadTracks);
     }
 
     document.addEventListener('keydown', this.onKeyDown);

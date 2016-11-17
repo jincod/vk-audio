@@ -59,19 +59,13 @@ const loadTracks = (query, callback) => {
 	});
 
 	Promise.all(promises)
-	  .then((results) => {
-	    return [].concat.apply([], results);
-	  })
-	  .then((result) => {
-	    return _.filter(result, (item) => { return item.url !== ''; });
-	  })
-	  .then((result) => {
-	    return _.uniq(result, (item) => { return `${item.artist}${item.title}`; });
-	  })
-	  .then((result) => {
-	    return callback(null, result);
-	  })
-	  .catch(callback);
+		.then((results) => {
+			return [].concat.apply([], results);
+		})
+		.then(results => results.filter(item => item.url !== ''))
+		.then(results => _.uniq(results, item => `${item.artist}${item.title}`))
+		.then(results => callback(null, results))
+		.catch(callback);
 }
 
 export { loadTracks };
