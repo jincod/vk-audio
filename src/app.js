@@ -1,11 +1,11 @@
 import 'babel-polyfill';
-import request from 'superagent'
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
-import { createHashHistory } from 'history';
-import { Player } from './player'
-import { QueryHistory } from './query-history'
+import request from 'superagent';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {Router, Route, IndexRoute, useRouterHistory} from 'react-router';
+import {createHashHistory} from 'history';
+import Player from './player';
+import QueryHistory from './query-history';
 
 require('./styles/styles.less');
 

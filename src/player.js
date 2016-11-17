@@ -8,7 +8,7 @@ import { AudioPlayer } from './components/audio-player';
 import { ActiveTrack } from './components/active-track';
 import { GoForm } from './components/go-form';
 
-export class Player extends React.Component {
+export default class Player extends React.Component {
   constructor(props) {
     super(props);
 

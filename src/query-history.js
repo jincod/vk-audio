@@ -1,12 +1,7 @@
-import React from 'react'
-import {Link} from 'react-router'
+import React, {Component} from 'react';
+import {Link} from 'react-router';
 
-
-export class QueryHistory extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
+export default class QueryHistory extends Component {
   render() {
     var history = localStorage.getItem('history') && JSON.parse(localStorage.getItem('history')) || [];
     history = history.sort();
