@@ -10,20 +10,13 @@ const getData = (url, skipFirst) => {
 
 	return new Promise((resolve, reject) => {
 		window[callbackName] = (data) => {
-			const result = [];
 			const posts = skipFirst ? data.response.slice(1) : data.response;
 
-			for (var i = 0; i < posts.length; i++) {
-				const attachments = posts[i].attachments;
-				if(attachments) {
-					for (var j = 0; j < attachments.length; j++) {
-						const attachment = attachments[j];
-						if(attachment.audio) {
-							result.push(attachment.audio);
-						}
-					};
-				}
-			};
+			const result = posts
+				.filter(p => p.attachments)
+				.map(p => p.attachments.filter(a => a.audio))
+				.reduce((result, attachments) => result.concat(attachments.map(a => a.audio)), []);
+
 			resolve(result);
 		};
 
