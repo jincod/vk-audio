@@ -14,7 +14,7 @@ const getData = (url, skipFirst) => {
 
 			const result = posts
 				.filter(p => p.attachments)
-				.map(p => p.attachments.filter(a => a.audio))
+				.map(p => p.attachments.filter(a => a.audio && a.audio.url))
 				.reduce((result, attachments) => result.concat(attachments.map(a => a.audio)), []);
 
 			resolve(result);
