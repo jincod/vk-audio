@@ -1,12 +1,6 @@
-import React from 'react'
+import React, {Component} from 'react';
 
-
-export class PlayListItem extends React.Component {
-  playTrack(index) {
-    this.props.playThisTrack(index);
-  }
-
-  formatDuration(seconds) {
+const formatDuration = seconds => {
     var hours = Math.floor(seconds / 3600);
     var minutes = Math.floor((seconds - (hours * 3600)) / 60);
     var seconds = seconds - (hours * 3600) - (minutes * 60);
@@ -20,19 +14,20 @@ export class PlayListItem extends React.Component {
     }
     return `${hours}:${minutes}:${seconds}`;
   }
-  
+
+export default class PlayListItem extends Component {
   render() {
-    const track = this.props.track;
+    const {track, playThisTrack} = this.props;
     const currentTrackIndex = track.currentTrackIndex;
     const currentClass = track.index === currentTrackIndex ?
       'playlist__item playlist__item_active' : 'playlist__item';
 
     return (
-      <div onClick={this.playTrack.bind(this, track.index)} className={currentClass}>
+      <div onClick={() => playThisTrack(track.index)} className={currentClass}>
         <div className="playlist__item_index">{track.index + 1}.</div>
         <div className="playlist__item_title"><span dangerouslySetInnerHTML={{__html: track.title}}></span></div>
         <div className="playlist__item_artist"><span dangerouslySetInnerHTML={{__html: track.artist}}></span></div>
-        <div className="playlist__item_time">{this.formatDuration(track.duration)}</div>
+        <div className="playlist__item_time">{formatDuration(track.duration)}</div>
       </div>
     );
   }

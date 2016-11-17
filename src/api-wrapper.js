@@ -68,4 +68,4 @@ const loadTracks = (query, callback) => {
 		.catch(callback);
 }
 
-export { loadTracks };
+export default loadTracks;

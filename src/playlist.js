@@ -1,11 +1,8 @@
-import React from 'react'
-import { Link } from 'react-router'
-import { PlayListItem } from './playlist-item'
+import React, {Component} from 'react';
+import {Link} from 'react-router';
+import PlayListItem from './playlist-item';
 
-export class PlayList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+export default class PlayList extends Component {
   renderEmpty() {
     return (
       <div className="hello-block">
@@ -15,15 +12,21 @@ export class PlayList extends React.Component {
     );
   }
   render() {
-    if(!this.props.tracks.length) {
+    const {tracks, currentTrackIndex, playThisTrack} = this.props;
+
+    if(!tracks.length) {
       return this.renderEmpty();
     }
 
-    const items = this.props.tracks.map((track, index) => {
-      track.index = index;
-      track.currentTrackIndex = this.props.currentTrackIndex;
-      return <PlayListItem key={index} track={track} playThisTrack={this.props.playThisTrack} />
-    });
-    return <div className="playlist">{items}</div>;
+    return (
+      <div className="playlist">
+      {
+        tracks
+          .map((track, index) => Object.assign(track, {index, currentTrackIndex}))
+          .map(track => (
+            <PlayListItem key={track.index} track={track} playThisTrack={playThisTrack} />
+          ))
+      }
+      </div>);
   }
 }

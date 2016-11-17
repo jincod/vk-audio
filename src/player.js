@@ -1,9 +1,9 @@
 import _ from 'underscore';
 import request from 'superagent';
 import React from 'react';
-import { Link } from 'react-router';
-import { PlayList } from './playlist';
-import { loadTracks } from './api-wrapper';
+import {Link} from 'react-router';
+import PlayList from './playlist';
+import loadTracks from './api-wrapper';
 import { AudioPlayer } from './components/audio-player';
 import { ActiveTrack } from './components/active-track';
 import { GoForm } from './components/go-form';
