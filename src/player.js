@@ -1,12 +1,10 @@
-import _ from 'underscore';
-import request from 'superagent';
 import React from 'react';
 import {Link} from 'react-router';
 import PlayList from './playlist';
+import EmptyPlayList from './empty-playlist';
 import loadTracks from './api-wrapper';
-import { AudioPlayer } from './components/audio-player';
+import AudioPlayer from './components/audio-player';
 import { ActiveTrack } from './components/active-track';
-import { GoForm } from './components/go-form';
 
 export default class Player extends React.Component {
   constructor(props) {
@@ -15,12 +13,13 @@ export default class Player extends React.Component {
     this.scrollToCurrentTrack = this.scrollToCurrentTrack.bind(this);
     this.onKeyDown = this.onKeyDown.bind(this);
     this.loadTracks = this.loadTracks.bind(this);
+    this.playThisTrack = this.playThisTrack.bind(this);
 
     this.state = {
       playlistId: props.params.playlistId,
       tracks: [],
       currentTrackIndex: -1,
-      isLoading: false
+      isLoading: true
     }
   }
 
@@ -29,9 +28,10 @@ export default class Player extends React.Component {
 
     window.document.title = playlistId ? 'VK Audio - ' +  playlistId : 'VK Audio';
 
-    if(playlistId) {
-      this.setState({isLoading: true});
+    if (playlistId) {
       loadTracks(playlistId, this.loadTracks);
+    } else {
+      this.setState({isLoading: false});
     }
 
     document.addEventListener('keydown', this.onKeyDown);
@@ -146,25 +146,41 @@ export default class Player extends React.Component {
   }
 
   renderPlaylist() {
-    var playlist;
+    const {tracks, currentTrackIndex} = this.state;
 
-    if(this.state.isError) {
-      playlist = <div>Error: Can't load tracks</div>
-    } else if(this.state.isLoading) {
-      playlist = <div>Loading...</div>
-    } else {
-      playlist = <PlayList tracks={this.state.tracks} currentTrackIndex={this.state.currentTrackIndex} playThisTrack={this.playThisTrack.bind(this)}/>
-    }
-
-    return playlist;
+    return (
+      <PlayList
+        tracks={tracks}
+        currentTrackIndex={currentTrackIndex}
+        playThisTrack={this.playThisTrack}/>
+    );
   }
 
   render() {
-    const {tracks, currentTrackIndex} = this.state;
+    const {isError, isLoading, tracks, currentTrackIndex} = this.state;
     const track = tracks[currentTrackIndex];
-    if(track) {
+
+    if (isError) {
+      return (
+        <div>Error: Can't load tracks</div>
+      );
+    }
+
+    if (isLoading) {
+      return (
+        <div>Loading...</div>
+      );
+    }
+
+    if (track) {
       track.isPlaying = localStorage.getItem('isPlaying-' + this.state.playlistId) === 'true';
       track.playlistId = this.state.playlistId;
+    }
+
+    if (tracks.length === 0) {
+      return (
+        <EmptyPlayList />
+      );
     }
 
     return (
@@ -172,13 +188,11 @@ export default class Player extends React.Component {
         <div className="navbar-fixed">
           <div className="layout">
             <nav className="navbar">
-              {
-                track && <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
-              }
+              <AudioPlayer track={track} playNextTrack={this.playNextTrack.bind(this)} />
               <ActiveTrack
+                track={track}
+                currentTrackIndex={currentTrackIndex}
                 scrollToCurrentTrack={this.scrollToCurrentTrack}
-                currentTrackIndex={this.state.currentTrackIndex}
-                tracks={this.state.tracks}
               />
             </nav>
           </div>

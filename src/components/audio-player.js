@@ -1,14 +1,6 @@
-import React from 'react'
+import React, {Component} from 'react';
 
-export class AudioPlayer extends React.Component {
-  constructor(props) {
-    super(props);
-    
-    this.state = {
-      isLoading: false,
-      isPlaying: false
-    }
-  }
+export default class AudioPlayer extends Component {
   componentDidMount() {
     var self = this;
 
@@ -23,7 +15,7 @@ export class AudioPlayer extends React.Component {
     }
 
     document.querySelector('.play-pause').addEventListener('click', (e) => {
-      const playlistId = this.props.track.playlistId;
+      const playlistId = track.playlistId;
       const isPlaying = localStorage.getItem('isPlaying-' + playlistId) === 'true';
       localStorage.setItem('isPlaying-' + playlistId, !isPlaying);
     });

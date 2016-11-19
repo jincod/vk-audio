@@ -64,6 +64,7 @@ const loadTracks = (query, callback) => {
 		})
 		.then(results => results.filter(item => item.url !== ''))
 		.then(results => _.uniq(results, item => `${item.artist}${item.title}`))
+		.then(results => results.map((item, id) => Object.assign(item, {id})))
 		.then(results => callback(null, results))
 		.catch(callback);
 }

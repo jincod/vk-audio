@@ -1,19 +1,15 @@
-import React from 'react'
+import React from 'react';
 
 export const ActiveTrack = ({
+  track,
   currentTrackIndex,
-  tracks,
   scrollToCurrentTrack
 }) => {
-  if(!tracks.length) {
-    return <div/>;
-  }
-  const track = tracks[currentTrackIndex];
-  const index = currentTrackIndex + 1;
+  const {artist, title} = track;
 
   return (
     <div onClick={scrollToCurrentTrack} className="current-track">
-      {index}. <span dangerouslySetInnerHTML={{__html: track.artist}}></span> - <span dangerouslySetInnerHTML={{__html: track.title}}></span>
+      {currentTrackIndex + 1}. <span dangerouslySetInnerHTML={{__html: artist}}></span> - <span dangerouslySetInnerHTML={{__html: title}}></span>
     </div>
   );
 };
