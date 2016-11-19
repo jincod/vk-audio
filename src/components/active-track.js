@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const ActiveTrack = ({
+const ActiveTrack = ({
   track,
   currentTrackIndex,
   scrollToCurrentTrack
@@ -13,3 +13,5 @@ export const ActiveTrack = ({
     </div>
   );
 };
+
+export default ActiveTrack;

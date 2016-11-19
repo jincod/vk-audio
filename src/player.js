@@ -1,10 +1,10 @@
 import React from 'react';
 import {Link} from 'react-router';
-import PlayList from './playlist';
-import EmptyPlayList from './empty-playlist';
 import loadTracks from './api-wrapper';
+import PlayList from './components/playlist';
+import EmptyPlayList from './components/empty-playlist';
 import AudioPlayer from './components/audio-player';
-import { ActiveTrack } from './components/active-track';
+import ActiveTrack from './components/active-track';
 
 export default class Player extends React.Component {
   constructor(props) {
